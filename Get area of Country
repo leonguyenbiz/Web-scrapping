@@ -1,0 +1,33 @@
+from selenium import webdriver as wd
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+import pandas as pd
+
+url = 'https://data.worldbank.org/indicator/AG.LND.TOTL.K2'
+dri = wd.Chrome()
+dri.get(url)
+
+countryTable = dri.find_elements(By.XPATH, "//div[@class='infinite']/div[2]/div/div[1]/a")
+yearTable = dri.find_elements(By.XPATH, "//div[@class='infinite']/div[2]/div/div[2]")
+areaTable = dri.find_elements(By.XPATH, "//div[@class='infinite']/div[2]/div/div[3]")
+
+country = []
+year = []
+area = []
+
+for coun in countryTable:
+    country.append(coun.text)
+
+for yea in yearTable:
+   year.append(yea.text)
+
+for are in areaTable:
+    area.append(are.text)
+
+# quit drive we opened at the beginning
+dri.quit()
+
+# Create Dataframe in Pandas and export to CSV (Excel)
+df = pd.DataFrame({'Country': country, 'Year': year, 'Area (sq.km)': area})
+df.to_csv('Area_of_country.csv')
+print(df)
