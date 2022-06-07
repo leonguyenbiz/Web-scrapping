@@ -1,0 +1,28 @@
+from selenium import webdriver as wd
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+import pandas as pd
+
+url = 'https://www.worldometers.info/coronavirus/'
+dri = wd.Chrome()
+dri.get(url)
+
+countryTable = dri.find_elements(By.XPATH, "//table[contains(@id,'main_table_countries_today')]/tbody/tr/td[2]")
+totalCaseTable = dri.find_elements(By.XPATH, "//table[contains(@id,'main_table_countries_today')]/tbody/tr/td[3]")
+totalDeathTable = dri.find_elements(By.XPATH, "//table[contains(@id,'main_table_countries_today')]/tbody/tr/td[5]")
+
+country = []
+totalCase = []
+totalDeath = []
+
+for coun in countryTable:
+    country.append(coun.text)
+for toca in totalCaseTable:
+    totalCase.append(toca.text)
+for tode in totalDeathTable:
+    totalDeath.append(tode.text)
+
+dri.quit()
+
+df = pd.DataFrame({'Country': country, 'Total Case': totalCase, 'Total Death': totalDeath})
+df.to_csv('Covid-19 statistics.csv')
