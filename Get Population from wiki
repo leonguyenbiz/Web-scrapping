@@ -1,0 +1,25 @@
+from selenium import webdriver as wd
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+import pandas as pd
+
+url = 'https://vi.wikipedia.org/wiki/Danh_s%C3%A1ch_qu%E1%BB%91c_gia_theo_d%C3%A2n_s%E1%BB%91'
+dri = wd.Chrome()
+dri.get(url)
+
+countryTable = dri.find_elements(By.XPATH, "//table[contains(@class,'wikitable sortable mw')]/tbody/tr/td[2]")
+popularTable = dri.find_elements(By.XPATH, "//table[contains(@class,'wikitable sortable mw')]/tbody/tr/td[3]")
+country = []
+popular = []
+for count in countryTable:
+    country.append(count.text)
+for popu in popularTable:
+    popular.append(popu.text)
+
+# quit drive we opened at the beginning
+dri.quit()
+
+# Create Dataframe in Pandas and export to CSV (Excel)
+df = pd.DataFrame({'country': country, 'population': popular})
+df.to_csv('popular.csv')
+print(df)
